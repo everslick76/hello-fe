@@ -10,7 +10,7 @@ const Alert = React.forwardRef((props, ref) => (
 export async function publish() {
   const response = await fetch(
     "https://hello-app-n3tuxf5gqa-lz.a.run.app/publish"
-  ).json();
+  );
   return response.json();
 }
 
