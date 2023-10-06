@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Button from "@mui/material/Button";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
@@ -15,26 +15,45 @@ export async function publish() {
 }
 
 export function ServerSideEvent() {
-  const [result, setResult] = React.useState(false);
+  const [alert, setAlert] = React.useState(false);
+  const [message, setMessage] = React.useState();
 
   function handleClick(event) {
-    publish(event.target.value).then(() => {
-      setResult(true);
+    publish(event.target.value).then((data) => {
+      console.log(data);
+      setMessage("Saved");
+      setAlert(true);
     });
   }
 
   function handleClose() {
-    setResult(false);
+    setAlert(false);
   }
+
+  function handleServerSideEvent(data) {
+    console.log(data);
+    setMessage("Published");
+    setAlert(true);
+  }
+
+  useEffect(() => {
+    const eventSource = new EventSource(
+      "https://hello-pubsub-n3tuxf5gqa-lz.a.run.app/events?stream=messages"
+    );
+    eventSource.onmessage = (e) => handleServerSideEvent(e.data);
+    return () => {
+      eventSource.close();
+    };
+  }, []);
 
   return (
     <div>
       <Button variant="contained" onClick={handleClick}>
         Save
       </Button>
-      <Snackbar open={result} autoHideDuration={3000} onClose={handleClose}>
+      <Snackbar open={alert} autoHideDuration={2000} onClose={handleClose}>
         <Alert onClose={handleClose} severity="success" sx={{ width: "100%" }}>
-          Success
+          {message}
         </Alert>
       </Snackbar>
     </div>
