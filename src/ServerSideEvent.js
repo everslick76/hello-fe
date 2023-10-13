@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState, forwardRef } from "react";
 import Badge from "@mui/material/Badge";
 import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
@@ -10,7 +10,7 @@ import Snackbar from "@mui/material/Snackbar";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 
-const Alert = React.forwardRef((props, ref) => (
+const Alert = forwardRef((props, ref) => (
   <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />
 ));
 
@@ -21,16 +21,15 @@ export async function publish(name) {
   return response.json();
 }
 
-export function ServerSideEvent() {
-  const [waiting, setWaiting] = React.useState(false);
-  const [disabled, setDisabled] = React.useState(true);
-  const [valid, setValid] = React.useState(false);
-  const [alert, setAlert] = React.useState(false);
-  const [message, setMessage] = React.useState();
-  const [name, setName] = React.useState();
+export function ServerSideEvent({ onEvent }) {
+  const [waiting, setWaiting] = useState(false);
+  const [disabled, setDisabled] = useState(true);
+  const [valid, setValid] = useState(false);
+  const [alert, setAlert] = useState(false);
+  const [message, setMessage] = useState();
+  const [name, setName] = useState();
 
   function handleClick() {
-    console.log(name);
     setWaiting(true);
     publish(name).then((data) => {
       console.log(data);
@@ -52,7 +51,7 @@ export function ServerSideEvent() {
   }
 
   function handleServerSideEvent(data) {
-    console.log(data);
+    onEvent(data);
     setMessage(`${data} has published something new`);
     setAlert(true);
   }
