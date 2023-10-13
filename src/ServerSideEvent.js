@@ -14,9 +14,9 @@ const Alert = React.forwardRef((props, ref) => (
   <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />
 ));
 
-export async function publish() {
+export async function publish(name) {
   const response = await fetch(
-    "https://hello-app-n3tuxf5gqa-lz.a.run.app/publish"
+    `https://hello-app-n3tuxf5gqa-lz.a.run.app/publish?name=${name}`
   );
   return response.json();
 }
@@ -27,10 +27,12 @@ export function ServerSideEvent() {
   const [valid, setValid] = React.useState(false);
   const [alert, setAlert] = React.useState(false);
   const [message, setMessage] = React.useState();
+  const [name, setName] = React.useState();
 
-  function handleClick(event) {
+  function handleClick() {
+    console.log(name);
     setWaiting(true);
-    publish(event.target.value).then((data) => {
+    publish(name).then((data) => {
       console.log(data);
       setMessage("Saved");
       setAlert(true);
@@ -40,6 +42,7 @@ export function ServerSideEvent() {
 
   function handleInput(event) {
     var valid = event.target.value !== "";
+    setName(event.target.value);
     setValid(valid);
     setDisabled(!valid);
   }
@@ -50,7 +53,7 @@ export function ServerSideEvent() {
 
   function handleServerSideEvent(data) {
     console.log(data);
-    setMessage("Published");
+    setMessage(`${data} has published something new`);
     setAlert(true);
   }
 
@@ -89,7 +92,9 @@ export function ServerSideEvent() {
     <div>
       <Card>
         <CardContent>
-          <Typography gutterBottom>Enter your name and press Save</Typography>
+          <Typography gutterBottom>
+            Enter <b>your name</b> and press <b>Save</b>
+          </Typography>
         </CardContent>
         <CardContent>{renderTextField()}</CardContent>
         <CardActions>
