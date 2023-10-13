@@ -1,7 +1,14 @@
 import React, { useEffect } from "react";
+import Badge from "@mui/material/Badge";
 import Button from "@mui/material/Button";
-import Snackbar from "@mui/material/Snackbar";
+import Card from "@mui/material/Card";
+import CardActions from "@mui/material/CardActions";
+import CardContent from "@mui/material/CardContent";
+import CircularProgress from "@mui/material/CircularProgress";
 import MuiAlert from "@mui/material/Alert";
+import Snackbar from "@mui/material/Snackbar";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
 
 const Alert = React.forwardRef((props, ref) => (
   <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />
@@ -15,15 +22,26 @@ export async function publish() {
 }
 
 export function ServerSideEvent() {
+  const [waiting, setWaiting] = React.useState(false);
+  const [disabled, setDisabled] = React.useState(true);
+  const [valid, setValid] = React.useState(false);
   const [alert, setAlert] = React.useState(false);
   const [message, setMessage] = React.useState();
 
   function handleClick(event) {
+    setWaiting(true);
     publish(event.target.value).then((data) => {
       console.log(data);
       setMessage("Saved");
       setAlert(true);
+      setWaiting(false);
     });
+  }
+
+  function handleInput(event) {
+    var valid = event.target.value !== "";
+    setValid(valid);
+    setDisabled(!valid);
   }
 
   function handleClose() {
@@ -46,13 +64,51 @@ export function ServerSideEvent() {
     };
   }, []);
 
+  function renderTextField() {
+    return valid ? (
+      <TextField
+        id="outlined-basic"
+        label="Your name"
+        variant="outlined"
+        disabled={waiting}
+        onChange={handleInput}
+      />
+    ) : (
+      <TextField
+        error
+        id="outlined-error"
+        label="Your name"
+        variant="outlined"
+        disabled={waiting}
+        onChange={handleInput}
+      />
+    );
+  }
+
   return (
     <div>
-      <Button variant="contained" onClick={handleClick}>
-        Save
-      </Button>
+      <Card>
+        <CardContent>
+          <Typography gutterBottom>Enter your name and press Save</Typography>
+        </CardContent>
+        <CardContent>{renderTextField()}</CardContent>
+        <CardActions>
+          <Badge
+            badgeContent={<CircularProgress size={20} />}
+            invisible={!waiting}
+          >
+            <Button
+              variant="contained"
+              onClick={handleClick}
+              disabled={disabled || waiting}
+            >
+              Save
+            </Button>
+          </Badge>
+        </CardActions>
+      </Card>
       <Snackbar open={alert} autoHideDuration={2000} onClose={handleClose}>
-        <Alert onClose={handleClose} severity="success" sx={{ width: "100%" }}>
+        <Alert onClose={handleClose} severity="success">
           {message}
         </Alert>
       </Snackbar>
