@@ -1,10 +1,12 @@
 import React from "react";
-// import { BarChart } from "@mui/x-charts/BarChart";
+import { BarChart } from "@mui/x-charts/BarChart";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
+import CircularProgress from "@mui/material/CircularProgress";
 
 export default function SimpleBarChart({ names }) {
+  if (!names.size) return <CircularProgress size={100} />;
   return (
     <div>
       <Card>
@@ -14,17 +16,7 @@ export default function SimpleBarChart({ names }) {
           </Typography>
         </CardContent>
         <CardContent>
-          <>
-            {Array.from(names.keys()).map((key) => (
-              <span>{key}</span>
-            ))}
-          </>
-          <>
-            {Array.from(names.values()).map((val) => (
-              <span>{val}</span>
-            ))}
-          </>
-          {/* <BarChart
+          <BarChart
             xAxis={[
               {
                 id: "names",
@@ -39,7 +31,7 @@ export default function SimpleBarChart({ names }) {
             ]}
             width={1000}
             height={300}
-          /> */}
+          />
         </CardContent>
       </Card>
     </div>
