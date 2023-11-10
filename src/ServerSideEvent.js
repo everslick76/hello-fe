@@ -31,8 +31,7 @@ export function ServerSideEvent({ onEvent }) {
 
   function handleClick() {
     setSaving(true);
-    publish(name).then((data) => {
-      console.log(data);
+    publish(name).then(() => {
       setMessage("Saved");
       setAlert(true);
       setSaving(false);
