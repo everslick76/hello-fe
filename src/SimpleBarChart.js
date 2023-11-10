@@ -6,7 +6,9 @@ import Typography from "@mui/material/Typography";
 import CircularProgress from "@mui/material/CircularProgress";
 
 export default function SimpleBarChart({ names }) {
-  if (!names.size) return <CircularProgress size={100} />;
+  console.log(names);
+  if (names === undefined || !names.size)
+    return <CircularProgress size={100} />;
   return (
     <div>
       <Card>

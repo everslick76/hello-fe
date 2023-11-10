@@ -22,7 +22,7 @@ export async function publish(name) {
 }
 
 export function ServerSideEvent({ onEvent }) {
-  const [waiting, setWaiting] = useState(false);
+  const [saving, setSaving] = useState(false);
   const [disabled, setDisabled] = useState(true);
   const [valid, setValid] = useState(false);
   const [alert, setAlert] = useState(false);
@@ -30,12 +30,12 @@ export function ServerSideEvent({ onEvent }) {
   const [name, setName] = useState();
 
   function handleClick() {
-    setWaiting(true);
+    setSaving(true);
     publish(name).then((data) => {
       console.log(data);
       setMessage("Saved");
       setAlert(true);
-      setWaiting(false);
+      setSaving(false);
     });
   }
 
@@ -64,6 +64,7 @@ export function ServerSideEvent({ onEvent }) {
     return () => {
       eventSource.close();
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   function renderTextField() {
@@ -72,7 +73,7 @@ export function ServerSideEvent({ onEvent }) {
         id="outlined-basic"
         label="Your name"
         variant="outlined"
-        disabled={waiting}
+        disabled={saving}
         onChange={handleInput}
       />
     ) : (
@@ -81,7 +82,7 @@ export function ServerSideEvent({ onEvent }) {
         id="outlined-error"
         label="Your name"
         variant="outlined"
-        disabled={waiting}
+        disabled={saving}
         onChange={handleInput}
       />
     );
@@ -99,12 +100,12 @@ export function ServerSideEvent({ onEvent }) {
         <CardActions>
           <Badge
             badgeContent={<CircularProgress size={20} />}
-            invisible={!waiting}
+            invisible={!saving}
           >
             <Button
               variant="contained"
               onClick={handleClick}
-              disabled={disabled || waiting}
+              disabled={disabled || saving}
             >
               Save
             </Button>
