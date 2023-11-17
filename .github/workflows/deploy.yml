@@ -30,12 +30,15 @@ jobs:
           workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER_NAME }}
           service_account: ${{ secrets.GCP_WORKLOAD_IDENTITY_SA_EMAIL }}
 
-      - id: build
-        name: Build frontend
+      - id: setup-node
+        name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 18
-          run: npm run build
+
+      - id: build
+        name: Build frontend
+        run: npm run build
 
       - id: upload
         name: Upload frontend to static website
