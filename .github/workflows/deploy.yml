@@ -1,0 +1,38 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - v*.*.*
+  workflow_dispatch:
+
+jobs:
+  copy-build-to-bucket:
+    name: Copy build to bucket
+    runs-on: ubuntu-latest
+
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - id: checkout
+        name: Checkout
+        uses: actions/checkout@v3
+
+      - id: authorize
+        name: Authorize using Workflow Identity Federation
+        uses: google-github-actions/auth@v1
+        with:
+          token_format: access_token
+          workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER_NAME }}
+          service_account: ${{ secrets.GCP_WORKLOAD_IDENTITY_SA_EMAIL }}
+
+      - id: 'upload'
+        uses: 'google-github-actions/upload-cloud-storage@v1'
+        with:
+          path: '../../build'
+          destination: 'cloud-core-376009-static-website-bucket'
+          parent: false
