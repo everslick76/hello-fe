@@ -20,7 +20,7 @@ jobs:
     steps:
       - id: checkout
         name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - id: authorize
         name: Authorize using Workflow Identity Federation
@@ -30,9 +30,17 @@ jobs:
           workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER_NAME }}
           service_account: ${{ secrets.GCP_WORKLOAD_IDENTITY_SA_EMAIL }}
 
-      - id: 'upload'
-        uses: 'google-github-actions/upload-cloud-storage@v1'
+      - id: build
+        name: Build frontend
+        uses: actions/setup-node@v4
         with:
-          path: '../../build'
-          destination: 'cloud-core-376009-static-website-bucket'
+          node-version: 18
+          run: npm run build
+
+      - id: upload
+        name: Upload frontend to static website
+        uses: google-github-actions/upload-cloud-storage@v1
+        with:
+          path: ../../build
+          destination: cloud-core-376009-static-website-bucket
           parent: false
