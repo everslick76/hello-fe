@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 export function get() {
   return new Promise((resolve) => {
     axios
-      .get("https://hello-app-n3tuxf5gqa-lz.a.run.app/chart")
+      .get("https://hello-app-dhsiets7pq-ey.a.run.app/chart")
       .then((response) => {
         resolve(new Map(Object.entries(response.data)));
       })

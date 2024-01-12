@@ -16,7 +16,7 @@ const Alert = forwardRef((props, ref) => (
 
 export async function publish(name) {
   const response = await fetch(
-    `https://hello-app-n3tuxf5gqa-lz.a.run.app/publish?name=${name}`
+    `https://hello-app-dhsiets7pq-ey.a.run.app/publish?name=${name}`
   );
   return response.json();
 }
@@ -57,7 +57,7 @@ export function ServerSideEvent({ onEvent }) {
 
   useEffect(() => {
     const eventSource = new EventSource(
-      "https://hello-pubsub-n3tuxf5gqa-lz.a.run.app/events?stream=messages"
+      "https://hello-pubsub-dhsiets7pq-ey.a.run.app/events?stream=messages"
     );
     eventSource.onmessage = (e) => handleServerSideEvent(e.data);
     return () => {
